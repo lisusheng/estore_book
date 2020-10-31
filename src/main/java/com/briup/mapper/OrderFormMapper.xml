@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.mapper.OrderFormMapper">
+<!-- 
+	private Integer id;
+	private Double cost;
+	private Date orderdate;
+	private Customer customer;
+	private ShopAddress shopAddress;
+	private Long orderid;
+ -->
+ <resultMap type="c" id="CustomerResult">
+		<id property="id" column="cid"/>
+		<result property="name" column="name"/>
+		<result property="password" column="password"/>
+		<result property="zipCode" column="zipCode"/>
+		<result property="address" column="caddress"/>
+		<result property="telephone" column="telephone"/>
+		<result property="email" column="email"/>
+	</resultMap>
+	<resultMap type="addr" id="ShopAddressMapperResult">
+ 		<id column="sid" property="id"/>
+ 		<result column="receiveName" property="receiveName"/>
+ 		<result column="saddress" property="address"/>
+ 		<result column="phone" property="phone"/>
+ 	</resultMap>
+	<resultMap type="OrderForm" id="OrderFormResult">
+		<id property="id" column="id"/>
+		<result property="cost" column="cost"/>
+		<result property="orderdate" column="orderDate"/>
+		<result property="orderid" column="order_id"/>
+		<association property="customer" resultMap="CustomerResult" />
+		<association property="shopAddress" resultMap="ShopAddressMapperResult"/>
+	</resultMap>
+	
+	<insert id="saveOrderForm" parameterType="OrderForm" useGeneratedKeys="true" keyProperty="id">
+		insert into es_orderform(cost,orderDate,shopAddress_id,customer_id,order_id)
+		values(#{cost},#{orderdate},#{shopAddress.id},#{customer.id},#{orderid})
+	</insert>
+	
+	<select id="findOrderFormByOrderid" parameterType="Long" resultMap="OrderFormResult">
+		select of.id,of.cost,of.orderdate,of.order_id,c.id cid,c.name,c.password,c.zipCode,c.address caddress,c.telephone,c.email,a.id sid,receiveName,a.address saddress,phone
+		from es_orderform of,es_customer c,es_shopaddress a
+		where of.shopAddress_id=a.id and of.customer_id=c.id and of.order_id=#{id}
+	</select>
+	
+	<select id="findOrderFormByCustomerId" parameterType="Integer" resultMap="OrderFormResult">
+		select of.id,of.cost,of.orderdate,of.order_id,c.id cid,c.name,c.password,c.zipCode,c.address caddress,c.telephone,c.email,a.id sid,receiveName,a.address saddress,phone
+		from es_orderform of,es_customer c,es_shopaddress a
+		where of.shopAddress_id=a.id and of.customer_id=c.id and of.customer_id=#{id}
+	</select>
+	
+	<delete id="deleteOrderFormById" parameterType="Integer">
+		delete from es_orderform
+		where id=#{id}
+	</delete>
+</mapper>

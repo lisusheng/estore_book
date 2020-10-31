@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.mapper.CustomerMapper">
+	<resultMap type="c" id="CustomerResult">
+		<id property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="password" column="password"/>
+		<result property="zipCode" column="zipCode"/>
+		<result property="address" column="address"/>
+		<result property="telephone" column="telephone"/>
+		<result property="email" column="email"/>
+	</resultMap>
+	
+	<insert id="register" parameterType="c" useGeneratedKeys="true" keyProperty="id">
+		insert into es_customer 
+		values(#{id},#{name},#{password},#{zipCode},#{address},#{telephone},#{email})
+	</insert>	
+	
+	<select id="findCustomerByName" resultMap="CustomerResult" parameterType="String">
+		select * from es_customer
+		where name=#{name}
+	</select>
+	
+	<select id="login" resultMap="CustomerResult">
+		select * from es_customer
+		where name=#{param1} and password=#{param2}
+	</select>
+</mapper>

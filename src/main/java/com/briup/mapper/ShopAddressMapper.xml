@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.mapper.ShopAddressMapper">
+<!-- 
+	private Integer id;
+	private String receiveName;
+	private String address;
+	private String phone;
+	private Customer customer;
+ -->
+ 	<resultMap type="addr" id="ShopAddressMapperResult">
+ 		<id column="sid" property="id"/>
+ 		<result column="receiveName" property="receiveName"/>
+ 		<result column="saddress" property="address"/>
+ 		<result column="phone" property="phone"/>
+ 		
+ 		<association property="customer" javaType="c" resultMap="com.briup.mapper.CustomerMapper.CustomerResult" />
+ 	</resultMap>
+	
+	<insert id="saveAddress" parameterType="addr" useGeneratedKeys="true" keyProperty="id">
+		insert into es_shopaddress(receiveName,address,phone,customer_id)
+		values(#{receiveName},#{address},#{phone},#{customer.id})
+	</insert>
+	
+	<select id="findAddressByCustomerId" parameterType="Integer" resultMap="ShopAddressMapperResult">
+		select s.id sid,receiveName,s.address saddress,phone,c.id,c.name,c.password,c.zipCode,c.address,c.telephone,c.email
+		from es_shopaddress s right outer join es_customer c
+		on s.customer_id=c.id
+		where s.customer_id=#{id}
+	</select>
+	
+</mapper>
